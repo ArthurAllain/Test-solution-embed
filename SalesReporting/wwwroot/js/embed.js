@@ -51,7 +51,24 @@ var embedReport = (report, editMode) => {
             panes: {
                 filters: { visible: false },
                 pageNavigation: { visible: false }
-            }
+            },
+            extensions: [
+                {
+                    command: {
+                        name: "showValue",
+                        title: "Show value in alert box",
+                        selector: {
+                            $schema: "http://powerbi.com/product/schema#visualSelector",
+                            visualName: "bf36eb378296825d9db9" // Monthly sales trends
+                        },
+                        extend: {
+                            visualContextMenu: {
+                                title: "Show value in alert box"
+                            }
+                        }
+                    }
+                }
+            ]
         }
     };
 
@@ -60,6 +77,21 @@ var embedReport = (report, editMode) => {
 
     // Embed the report
     var embeddedReport = powerbi.embed(embedContainer, config);
+
+    // Add "Show value" context menu item
+    embeddedReport.on("commandTriggered", function (command) {
+        // Determine the command detail
+        var commandDetails = command.detail;
+        
+        // If the command is showValue, show an alert box
+        if (commandDetails.command === "showValue") {
+            // Retrieve specific details from the selected data point
+            const category = commandDetails.dataPoints[0].identity[0].equals;
+            const value = commandDetails.dataPoints[0].values[0].formattedValue;
+            
+            alert(category + " value is " + value);
+        }
+    });
 }
 
 // Embed the Q&A experience
@@ -84,23 +116,23 @@ var embedQnaDataset = (dataset) => {
 
 // Filter reports by product demographic
 $(document).ready(function () {
-    $('#demographic').change(function () {
-        const report = powerbi.embeds[0];
-        const demographic = this.value;
+	$('#demographic').change(function () {
+		const report = powerbi.embeds[0];
+		const demographic = this.value;
 
-        const removeFilters = (demographic == "*");
-        const basicFilter = {
-            "$schema": "http://powerbi.com/product/schema#basic",
-            "target": {
-                "table": "Product",
-                "column": "Demographic"
-            },
-            "operator": removeFilters ? "All" : "In",
-            "values": removeFilters ? [] : [demographic]
-        }
-
-        // Update filters
-        report.updateFilters(models.FiltersOperations.Replace, [basicFilter])
-            .catch(error => { console.log(error); });
-    });
+		const removeFilters = (demographic == "*");
+		const basicFilter = {
+			"$schema": "http://powerbi.com/product/schema#basic",
+			"target": {
+				"table": "Product",
+				"column": "Demographic"
+			},
+			"operator": removeFilters ? "All" : "In",
+			"values": removeFilters ? [] : [demographic]
+		}
+		
+		// Update filters
+		report.updateFilters(models.FiltersOperations.Replace, [basicFilter])
+			.catch(error => { console.log(error); });
+	});
 });

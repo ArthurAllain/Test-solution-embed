@@ -19,7 +19,6 @@ public class HomeController : Controller
         var viewModel = await _powerBiApiService.GetReportsEmbeddingData();
         return View(viewModel);
     }
-
     public IActionResult Privacy()
     {
         return View();

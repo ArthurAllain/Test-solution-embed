@@ -39,11 +39,11 @@
 </div>
 
 @section Scripts {
-<script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.17.2/dist/powerbi.min.js"></script>
-<script>
-    var reports = @Html.Raw(Model.ReportsJson)
+	<script src="https://cdn.jsdelivr.net/npm/powerbi-client@2.17.2/dist/powerbi.min.js"></script>
+	<script>
+		var reports = @Html.Raw(Model.ReportsJson)
 		var datasets = @Html.Raw(Model.DatasetsJson)
 		var embedToken = "@Model.EmbedToken";
-</script>
-<script src="~/js/embed.js"></script>
+	</script>
+    <script src="~/js/embed.js"></script>
 }

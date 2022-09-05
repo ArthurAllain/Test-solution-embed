@@ -1,7 +1,9 @@
 var builder = WebApplication.CreateBuilder(args);
+
 var startup = new SalesReporting.Startup(builder.Configuration);
 
 startup.ConfigureServices(builder.Services);
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
